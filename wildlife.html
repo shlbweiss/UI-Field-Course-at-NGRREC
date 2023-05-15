@@ -408,9 +408,9 @@ Evenness</a></li>
 beyond what is offered from ‘base R’. In order to use the tools within a
 specific package, you must install and load the package within your
 current R session.</p>
-<p>Here, we’re loading the packages, ‘tidyr’, ‘dplyr’ and ‘ggplot2’
-tidyr and dplyr are both packages within the tidyverse family. You can
-read more about tidyverse here: <a href="https://www.tidyverse.org/" class="uri">https://www.tidyverse.org/</a></p>
+<p>Here, we’re loading the packages, ‘tidyr’, ‘dplyr’ and ‘ggplot2’</p>
+<p>tidyr and dplyr are both packages within the tidyverse family. You
+can read more about tidyverse here: <a href="https://www.tidyverse.org/" class="uri">https://www.tidyverse.org/</a></p>
 <p>ggplot2 is a package used to create flexible graphics with R.</p>
 <pre class="r"><code># load the packages we&#39;ll need to work with
 library(ggplot2)
@@ -439,7 +439,7 @@ is a common file format for storing large datasets.</p>
 <pre class="r"><code>wildlife &lt;- read.csv(&quot;wildlife_example.csv&quot;)
 
 # inspect the data 
-head(wildlife)</code></pre>
+head(wildlife) # this allows you to inspect the first 6 rows of this data frame</code></pre>
 <pre><code>##   Site Species Abundance
 ## 1    A       A        59
 ## 2    A       B        12

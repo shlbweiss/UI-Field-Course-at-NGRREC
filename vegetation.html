@@ -411,9 +411,9 @@ Relative Percent Cover by Species</a></li>
 beyond what is offered from ‘base R’. In order to use the tools within a
 specific package, you must install and load the package within your
 current R session.</p>
-<p>Here, we’re loading the packages, ‘tidyr’, ‘dplyr’ and ‘ggplot2’
-tidyr and dplyr are both packages within the tidyverse family. You can
-read more about tidyverse here: <a href="https://www.tidyverse.org/" class="uri">https://www.tidyverse.org/</a></p>
+<p>Here, we’re loading the packages, ‘tidyr’, ‘dplyr’ and ‘ggplot2’</p>
+<p>tidyr and dplyr are both packages within the tidyverse family. You
+can read more about tidyverse here: <a href="https://www.tidyverse.org/" class="uri">https://www.tidyverse.org/</a></p>
 <p>ggplot2 is a package used to create flexible graphics with R.</p>
 <pre class="r"><code># load the packages we&#39;ll need to work with
 library(ggplot2)
@@ -435,16 +435,16 @@ setwd(&quot;C:/Users/saweiss.LC/OneDrive - Lewis and Clark Community College/UI 
 </div>
 <div id="read-in-dataset" class="section level2">
 <h2>Read in dataset</h2>
-<p>In order to read in your data into R, you must use the proper
-function that will recognize the file format of your data file. Here, we
-are reading in a .csv file (stands for ‘comma separated values’), which
-is a common file format for storing large datasets.</p>
+<p>In order to read your data into R, you must use the proper function
+that will recognize the file format of your data file. Here, we are
+reading in a .csv file (stands for ‘comma separated values’), which is a
+common file format for storing large datasets.</p>
 <p>*NOTE: All example data were made up for the purposes of
 demonstrating code</p>
 <pre class="r"><code>veg &lt;- read.csv(&quot;vegetation_example.csv&quot;)
 
 # inspect the data 
-head(veg)</code></pre>
+head(veg) # this allows you to inspect the first 6 rows of this data frame</code></pre>
 <pre><code>##   Transect Azimuth Distance              Species Percent_Cover
 ## 1        1       0        5 Phalaris arundinacea            50
 ## 2        1       0        5               Allium             8
@@ -462,9 +462,9 @@ Evenness</h2>
 here ‘site’ is going to be the quadrats along the transect.</p>
 <p><span class="math display">\[R = s\]</span> Where s is the number of
 different species observed.</p>
-<p>To count up the number of unique species at each site, we are using
-the ‘group_by’ and ‘summarize’ functions from the ‘dplyr’ package. We
-are also using pipes (noted with ‘%&gt;%’) to allow us to efficiently
+<p>To count up the number of unique species in each quadrat, we are
+using the ‘group_by’ and ‘summarize’ functions from the ‘dplyr’ package.
+We are also using pipes (noted with ‘%&gt;%’) to allow us to efficiently
 move the data through both functions in sequence.</p>
 <pre class="r"><code># calculating the number of species observed at each quadrat
 richness &lt;- veg %&gt;% 
@@ -510,7 +510,7 @@ cover of a given species in a quadrat, and N is the total percent cover
 of all individuals in that quadrat</p>
 <pre class="r"><code>diversity &lt;- veg %&gt;%
   group_by(Transect, Distance) %&gt;% # designate the grouping variable(s)
-  summarize(N = sum(Percent_Cover), # provide formula for calculating N (overall sum of individuals)
+  summarize(N = sum(Percent_Cover), # provide formula for calculating N (overall sum of percent cover)
             Shannon = -sum((Percent_Cover/sum(Percent_Cover))*log(Percent_Cover/sum(Percent_Cover)))) #provide the formula for the Shannon index, being mindful of where you place your parentheses.
 
 diversity # return the summarized data</code></pre>
@@ -546,11 +546,11 @@ species are. E values can range from close to 0 (where most species are
 rare and just a few are abundant) to 1 (where species are equally
 abundant). Evenness is calculated using both H’ and R:</p>
 <p><span class="math display">\[E = H’/ln(R)\]</span></p>
-<p>To make use of both our diversity and richness tables in this final
-calculation, we will join these two datasets together.</p>
-<pre class="r"><code>bio_indices &lt;- left_join(diversity, richness) # if not specified, will join based on a commonly named variable(s), here, those variables are &#39;Distance&#39; and Transect&#39;.
+<p>To make use of both our diversity and richness data frames in this
+final calculation, we will join them together.</p>
+<pre class="r"><code>bio_indices &lt;- left_join(diversity, richness) # if not specified, will join based on commonly named variable(s). Here, those variables are &#39;Distance&#39; and Transect&#39;.
 
-bio_indices # return the resulting joined dataset</code></pre>
+bio_indices # return the resulting joined data frame</code></pre>
 <pre><code>## # A tibble: 20 × 5
 ## # Groups:   Transect [4]
 ##    Transect Distance     N Shannon Richness
@@ -575,8 +575,8 @@ bio_indices # return the resulting joined dataset</code></pre>
 ## 18        4       25    50   1.37         4
 ## 19        4       35    26   1.07         3
 ## 20        4       45    84   1.48         6</code></pre>
-<p>Now that we have a data frame with both H’ and R, we can add the
-variable ‘Evenness’.</p>
+<p>Now that we have a data frame with both H’ and R, we can calculate
+the variable ‘Evenness’.</p>
 <p>Specific columns within a data set can be called on with the ‘$’
 symbol, followed by the name of the column. You can perform calculations
 using the contents of specific columns in the data frame this way.</p>
@@ -611,7 +611,7 @@ bio_indices # return the updated data frame</code></pre>
 richness, diversity and evenness values by Distance</p>
 <pre class="r"><code>bio_indices_avg &lt;- bio_indices %&gt;%
   group_by(Distance) %&gt;% # grouping variable is just distance since we are averaging by transect
-  summarize(avg_Richness = mean(Richness), avg_Shannon = mean(Shannon), avg_Evenness = mean(Evenness))</code></pre>
+  summarize(avg_Richness = mean(Richness), avg_Shannon = mean(Shannon), avg_Evenness = mean(Evenness)) # defines three new variables each taking the mean for a given distance </code></pre>
 </div>
 </div>
 <div id="graph-the-results" class="section level2">
@@ -620,16 +620,17 @@ richness, diversity and evenness values by Distance</p>
 To do this, we’ll use the ggplot2 package, which is a commonly used R
 graphing package, that allows for lots of flexible formatting
 options.</p>
-<p>Since we have four quadrats at each distance, we can plot these as
-box plots to also visualize the variation in indices at each distance.
-We’ll use the unaggregated data frame, bio_indices, to do this.</p>
+<p>Since we have four quadrats at each distance, we can plot the data as
+box plots to also visualize the variation in each index for each given
+distance. We’ll use the un-aggregated data frame, <em>bio_indices</em>,
+to do this.</p>
 <pre class="r"><code># first, we need to transform the data such that each observed index value is its own row, and we move the index names to one column. This is known as a &#39;long&#39; format data frame
-bio_indices_long &lt;- pivot_longer(bio_indices, cols = Shannon:Evenness, names_to = &quot;Index&quot;)
+bio_indices_long &lt;- pivot_longer(bio_indices, cols = Shannon:Evenness, names_to = &quot;Index&quot;) # cols argument is the first:last colummns for the indices.
 
 # Create a bar plot of the three indices, comparing sites
 bioplot &lt;- ggplot(data=bio_indices_long, aes(x=as.factor(Distance), y=value, fill=as.factor(Distance))) + # indicates the dataframe to use, the x axis variable (Site), y axis variable (value), and grouping variable (Site) for colors
   geom_boxplot() + # specifies type of plot
-  facet_grid(rows=vars(Index), scales = &quot;free_y&quot;) + # separates each index to its own plot in its own row
+  facet_grid(rows=vars(Index), scales = &quot;free_y&quot;) + # separates each index to its own plot in its own row, scales set to &#39;free_y&#39; to allow varied y axis ranges.
   ggtitle(&quot;Biodiversity Indices&quot;) + # title 
   xlab(&quot;Distance (m)&quot;) + # x axis label
   ylab(&quot;Index Value&quot;) + #y axis label 
@@ -642,10 +643,10 @@ bioplot </code></pre>
 <h2>Average and Relative Percent Cover by Species</h2>
 <p>We also collected percent cover data within our vegetation quadrats,
 so let’s take a look at some species-specific patterns. We’ll return to
-our original data frame, veg.</p>
-<pre class="r"><code># We&#39;ll want to add in some 0 values to account for not every species being in every quadrat. To do that we&#39;ll transform the dataframe into a &#39;wide&#39; format, with each species now having its own column
+our original data frame, <em>veg</em>.</p>
+<pre class="r"><code># We&#39;ll want to add in some 0 values to account for not every species being in every quadrat. To do that we&#39;ll transform the data frame into a &#39;wide&#39; format, so each species now has its own column
 
-veg_wide &lt;- pivot_wider(veg, id_cols = c(Transect, Distance), names_from = Species, values_from = Percent_Cover, values_fill = 0) # we make sure to set values_fill equal to zero so that non observations are counted as &#39;0&#39;.
+veg_wide &lt;- pivot_wider(veg, id_cols = c(Transect, Distance), names_from = Species, values_from = Percent_Cover, values_fill = 0) # we make sure to set values_fill equal to zero so that non-observations are counted as &#39;0&#39;.
 head(veg_wide) # inspect what the wide format data frame looks like</code></pre>
 <pre><code>## # A tibble: 6 × 18
 ##   Transect Distance Phalaris…¹ Allium Solid…² Golde…³ Carex Arabis Humul…⁴ Aster
@@ -662,7 +663,7 @@ head(veg_wide) # inspect what the wide format data frame looks like</code></pre>
 ## #   `Stellaria media` &lt;int&gt;, and abbreviated variable names
 ## #   ¹​`Phalaris arundinacea`, ²​Solidago, ³​Goldenrod, ⁴​`Humulus japonicus`</code></pre>
 <pre class="r"><code># we can now move back to long format to finish summarizing. You should notice that our new data frame is longer than the original &#39;veg&#39; data frame since we have now added in those zero observations
-veg_wzeros &lt;- pivot_longer(veg_wide, cols = `Phalaris arundinacea`:`Stellaria media`, names_to = &quot;Species&quot;, values_to = &quot;Percent_Cover&quot;) # cols argument is the first:last species colummns. I had to use `` around the names because the names include spaces.
+veg_wzeros &lt;- pivot_longer(veg_wide, cols = `Phalaris arundinacea`:`Stellaria media`, names_to = &quot;Species&quot;, values_to = &quot;Percent_Cover&quot;) # cols argument is the first:last species columns. I had to use `` around the names because the names include spaces.
 
 head(veg_wzeros)</code></pre>
 <pre><code>## # A tibble: 6 × 4
@@ -684,8 +685,8 @@ tot_cover &lt;- sum(veg_wzeros$Percent_Cover) # assign the value to an object so
 # summarizing average and relative percent covers by species across all plots
 avg_perc_cov &lt;- veg_wzeros %&gt;%
   group_by(Species) %&gt;% # this time our grouping variable is &quot;Species&quot;
-  summarize(Avg_Perc_Cover = mean(Percent_Cover), 
-            Rel_Perc_Cover = (sum(Percent_Cover)/tot_cover)*100) 
+  summarize(Avg_Perc_Cover = mean(Percent_Cover), # add new variable for the average percent cover
+            Rel_Perc_Cover = (sum(Percent_Cover)/tot_cover)*100)  # add new variable for the relative percent cover
 
 head(avg_perc_cov)</code></pre>
 <pre><code>## # A tibble: 6 × 3

@@ -401,9 +401,9 @@ years</a></li>
 beyond what is offered from ‘base R’. In order to use the tools within a
 specific package, you must install and load the package within your
 current R session.</p>
-<p>Here, we’re loading the packages, ‘tidyr’, ‘dplyr’ and ‘ggplot2’
-tidyr and dplyr are both packages within the tidyverse family. You can
-read more about tidyverse here: <a href="https://www.tidyverse.org/" class="uri">https://www.tidyverse.org/</a></p>
+<p>Here, we’re loading the packages, ‘tidyr’, ‘dplyr’ and ‘ggplot2’</p>
+<p>tidyr and dplyr are both packages within the tidyverse family. You
+can read more about tidyverse here: <a href="https://www.tidyverse.org/" class="uri">https://www.tidyverse.org/</a></p>
 <p>ggplot2 is a package used to create flexible graphics with R.</p>
 <pre class="r"><code># load the packages we&#39;ll need to work with
 library(ggplot2)
@@ -432,7 +432,7 @@ is a common file format for storing large datasets.</p>
 <pre class="r"><code>water &lt;- read.csv(&quot;water_example.csv&quot;)
 
 # inspect the data 
-head(water)</code></pre>
+head(water) # this allows you to inspect the first 6 rows of this data frame</code></pre>
 <pre><code>##                   Location      Date Year NH3_N NO3_N PO4_P TSS
 ## 1 MitchellCreek_UpperPiasa 5/16/2023 2023  0.02  1.55  0.05   2
 ## 2 MitchellCreek_UpperPiasa 5/17/2023 2023  0.01  1.20  0.05   4
@@ -468,9 +468,9 @@ water23</code></pre>
 <p>Let’s go ahead and graph these to see how they vary by day. To do
 this, we’ll use the ggplot2 package, which is a commonly used R graphing
 package, that allows for lots of flexible formatting options.</p>
-<p>Since we have sites that follow a flow path from upper to lower, we
-can tell R the logical order for those sites so that they’ll show up on
-the graphs in the order we would like.</p>
+<p>Since we have sites that run from upper to lower, we can tell R the
+logical order for those sites so that they’ll show up on the graphs in
+the order we would like.</p>
 <pre class="r"><code># Telling R the desired order for the Location variable
 water23$Location &lt;- factor(water23$Location, levels=c(&quot;MitchellCreek_UpperPiasa&quot;, &quot;AirportRd_MiddlePiasa&quot;, &quot;RockyFork_LowerPiasa&quot;)) # following this, you won&#39;t notice any visual change in the data frame, except for &#39;Location&#39; now has the data type, &#39;factor&#39;.
 
@@ -528,18 +528,19 @@ TSS_plot</code></pre>
 </div>
 <div id="compare-data-with-past-years" class="section level2">
 <h2>Compare data with past years</h2>
-<p>Let’s return to our initial water dataset, looking at patterns across
-all years Let’s see how this year compares with prior years To count up
-the number of unique species at each site, we are using the ‘group_by’
-and ‘summarize’ functions from the ‘dplyr’ package. We are also using
-pipes (noted with ‘%&gt;%’) to allow us to efficiently move the data
-through both functions in sequence.</p>
-<pre class="r"><code># First let&#39;s calculate the average value for each variable to the year, since we have multiple observations at some of the sites, and for all the 2023 sites
+<p>Let’s return to our initial <em>water</em> data frame, looking at
+patterns across all years. Let’s see how this year compares with prior
+years.</p>
+<p>To summarize the average values for each location and year, we are
+using the ‘group_by’ and ‘summarize’ functions from the ‘dplyr’ package.
+We are also using pipes (noted with ‘%&gt;%’) to allow us to efficiently
+move the data through both functions in sequence.</p>
+<pre class="r"><code># Calculate the average value for each variable to the year, since we have multiple observations at some of the sites, and for all the 2023 sites
 water_avgs &lt;- water %&gt;% 
-  group_by(Location, Year) %&gt;% # designate the grouping variable(s). In this case, we want a unique observation for each Location and Year combo.
-  summarize(NH3_N = mean(NH3_N), NO3_N = mean(NO3_N), PO4_P = mean(PO4_P), TSS = mean(TSS)) # provide the formula, in this case, taking the means
+  group_by(Location, Year) %&gt;% # designate the grouping variable(s). In this case, we want a single observation for each Location and Year combo.
+  summarize(NH3_N = mean(NH3_N), NO3_N = mean(NO3_N), PO4_P = mean(PO4_P), TSS = mean(TSS)) # creating four new variables which are the averages of NH3_N, NO3_N, PO4_P, and TSS
 
-water_avgs # return the resulting data frame, which summarizes species richness at each quadrat along each transect.</code></pre>
+water_avgs # return the resulting data frame.</code></pre>
 <pre><code>## # A tibble: 12 × 6
 ## # Groups:   Location [3]
 ##    Location                  Year   NH3_N NO3_N   PO4_P   TSS
@@ -562,7 +563,7 @@ figure, we will have to manipulate the data from its current ‘wide’
 format to a ‘long’ format, where each observed value has its own
 row.</p>
 <pre class="r"><code># go from wide to long format with the function &#39;pivot_longer&#39; in the tidyr package
-water_avgs_long &lt;- pivot_longer(water_avgs, cols = NH3_N:TSS, names_to = &quot;Variable&quot;)
+water_avgs_long &lt;- pivot_longer(water_avgs, cols = NH3_N:TSS, names_to = &quot;Variable&quot;) # cols argument is the first:last variable columns.
 head(water_avgs_long)  </code></pre>
 <pre><code>## # A tibble: 6 × 4
 ## # Groups:   Location [1]
@@ -576,13 +577,13 @@ head(water_avgs_long)  </code></pre>
 ## 6 AirportRd_MiddlePiasa  2017 NO3_N     3.34</code></pre>
 <div id="plot-all-years" class="section level4">
 <h4>Plot all years</h4>
-<pre class="r"><code>water_avgs_long$Year &lt;- as.factor(water_avgs_long$Year) # make Year a factor (right now it&#39;s &#39;numeric&#39;) so it will be given a discrete color when plotting
-water_avgs_long$Location &lt;- factor(water_avgs_long$Location, levels=c(&quot;MitchellCreek_UpperPiasa&quot;, &quot;AirportRd_MiddlePiasa&quot;, &quot;RockyFork_LowerPiasa&quot;)) # again telling R the preferred order for these location factors (upper to lower)
+<pre class="r"><code>water_avgs_long$Year &lt;- as.factor(water_avgs_long$Year) # make Year a factor (right now it&#39;s &#39;numeric&#39;). This will give each year a discrete color when plotting
+water_avgs_long$Location &lt;- factor(water_avgs_long$Location, levels=c(&quot;MitchellCreek_UpperPiasa&quot;, &quot;AirportRd_MiddlePiasa&quot;, &quot;RockyFork_LowerPiasa&quot;)) # again telling R the preferred order for these location factors (upper to lower) for this data frame
 
 water_allyrs_plot &lt;- ggplot(water_avgs_long, aes(x=Location, y=value, group=Year, color=Year)) + # this time we use the Year as our grouping variable
   geom_point() +
   geom_line() +
-  facet_grid(rows=vars(Variable), scales=&quot;free_y&quot;) + # this plots all four graphs on the same figure, with scales set to &#39;free y&#39; to allow different y axis scales
+  facet_grid(rows=vars(Variable), scales=&quot;free_y&quot;) + # this plots all four graphs on the same figure, with scales set to &#39;free y&#39; to allow different y-axis scales
   ggtitle(&quot;NH3, NO3, PO4, and TSS in Piasa Creek (mg/L)&quot;)
 
 water_allyrs_plot</code></pre>
