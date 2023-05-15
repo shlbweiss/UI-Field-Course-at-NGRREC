@@ -1,0 +1,85 @@
+Transect,Azimuth,Distance,Species,Percent_Cover
+1,0,5,Phalaris arundinacea,50
+1,0,5,Allium,8
+1,0,5,Solidago,4
+1,0,5,Goldenrod,3
+1,0,5,Carex,60
+1,0,10,Phalaris arundinacea,20
+1,0,10,Allium,6
+1,0,10,Solidago,7
+1,0,10,Carex,30
+1,0,10,Arabis,10
+1,0,25,Phalaris arundinacea,15
+1,0,25,Allium,12
+1,0,25,Carex,14
+1,0,25,Humulus japonicus,30
+1,0,25,Aster,4
+1,0,25,Rumex crispum,3
+1,0,35,Phalaris arundinacea,10
+1,0,35,Allium,6
+1,0,35,Solidago,5
+1,0,35,Acer negundo,12
+1,0,35,Humulus japonicus,25
+1,0,35,Aster,6
+1,0,45,Solidago,2
+1,0,45,Acer negundo,15
+1,0,45,Aster,7
+1,0,45,Populus deltoides,8
+2,90,5,Solidago,3
+2,90,5,Carex,45
+2,90,10,Rumex crispum,8
+2,90,10,Allium,12
+2,90,10,Solidago,2
+2,90,10,Acer negundo,15
+2,90,25,Humulus japonicus,30
+2,90,25,Aster,4
+2,90,25,Rumex crispum,3
+2,90,35,Acer negundo,20
+2,90,35,Aster,7
+2,90,35,Populus deltoides,12
+2,90,35,Allium,6
+2,90,35,Solidago,12
+2,90,45,Humulus japonicus,25
+2,90,45,Aster,9
+2,90,45,Solidago,4
+3,180,5,Solidago,8
+3,180,5,Allium,3
+3,180,5,Leersia Oryzoides,20
+3,180,5,Phalaris arundinacea,15
+3,180,15,Aster,10
+3,180,15,Arabis,12
+3,180,15,Solidago,4
+3,180,25,Phalaris arundinacea,40
+3,180,25,Rumex crispum,12
+3,180,25,Oxalis stricta,5
+3,180,25,Arabis,3
+3,180,25,Allium,10
+3,180,25,Aster,12
+3,180,35,Phalaris arundinacea,10
+3,180,35,Populus deltoides,10
+3,180,45,Acer negundo,15
+3,180,45,Phalaris arundinacea,25
+3,180,45,Solidago,12
+3,180,45,Allium,10
+4,270,5,Eleocharis palustris,15
+4,270,5,Solidago,12
+4,270,5,Aster,5
+4,270,5,Arabis,2
+4,270,5,Oxalis stricta,12
+4,270,5,Geranium,10
+4,270,15,Eleocharis palustris,10
+4,270,15,Aster,12
+4,270,15,Humulus japonicus,25
+4,270,25,Stellaria media,10
+4,270,25,Eleocharis palustris,10
+4,270,25,Geranium,15
+4,270,25,Humulus japonicus,15
+4,270,35,Geranium,10
+4,270,35,Aster,6
+4,270,35,Populus deltoides,10
+4,270,45,Humulus japonicus,40
+4,270,45,Populus deltoides,12
+4,270,45,Geranium,5
+4,270,45,Allium,15
+4,270,45,Aster,5
+4,270,45,Solidago,7
