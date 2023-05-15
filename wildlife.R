@@ -50,10 +50,11 @@ bio_indices # return the resulting joined dataset
 bio_indices$Evenness <- bio_indices$Shannon/log(bio_indices$Richness) # assigning the resulting evenness calculations to a new variable called 'Evenness'
 bio_indices # return the updated data frame
 
+
 #### Plotting the results ####
 
 # first, we need to transform the data such that each observed index value is its own row, and we move the index names to one column. This is known as a 'long' format data frame
-bio_indices_long <- pivot_longer(bio_indices, cols = Shannon:Evenness, names_to = "Index")
+bio_indices_long <- pivot_longer(bio_indices, cols = Shannon:Evenness, names_to = "Index") # cols argument is the first:last colummns for the indices.
 
 # Create a bar plot of the three indices, comparing sites
 bioplot <- ggplot(data=bio_indices_long, aes(x=Site, y=value, fill=Site)) + # indicates the dataframe to use, the x axis variable (Site), y axis variable (value), and grouping variable (Site) for colors

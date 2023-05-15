@@ -11,7 +11,7 @@
 
 <meta name="author" content="UI Field Course at NGRREC 2023" />
 
-<meta name="date" content="2023-05-14" />
+<meta name="date" content="2023-05-15" />
 
 <title>Indices of Biodiversity from Wildlife Abundance Data</title>
 
@@ -377,7 +377,7 @@ display: none;
 <h1 class="title toc-ignore">Indices of Biodiversity from Wildlife
 Abundance Data</h1>
 <h4 class="author">UI Field Course at NGRREC 2023</h4>
-<h4 class="date">2023-05-14</h4>
+<h4 class="date">2023-05-15</h4>
 
 </div>
 
@@ -416,14 +416,6 @@ read more about tidyverse here: <a href="https://www.tidyverse.org/" class="uri"
 library(ggplot2)
 library(tidyr)
 library(dplyr)</code></pre>
-<pre><code>## 
-## Attaching package: &#39;dplyr&#39;</code></pre>
-<pre><code>## The following objects are masked from &#39;package:stats&#39;:
-## 
-##     filter, lag</code></pre>
-<pre><code>## The following objects are masked from &#39;package:base&#39;:
-## 
-##     intersect, setdiff, setequal, union</code></pre>
 <p>If this is your first time using these packages within R, you’ll need
 to install them by running the following commands:</p>
 <p><em>install.packages(‘ggplot2’)</em></p>
@@ -509,9 +501,9 @@ abundant). Evenness is calculated using both H’ and R:</p>
 <p><span class="math display">\[E = H’/ln(R)\]</span></p>
 <p>To make use of both our diversity and richness tables in this final
 calculation, we will join these two datasets together.</p>
-<pre class="r"><code>bio_indices &lt;- left_join(diversity, richness) # if not specified, will join based on a commonly named variable, here, that variable is &#39;Site&#39;</code></pre>
-<pre><code>## Joining, by = &quot;Site&quot;</code></pre>
-<pre class="r"><code>bio_indices # return the resulting joined dataset</code></pre>
+<pre class="r"><code>bio_indices &lt;- left_join(diversity, richness) # if not specified, will join based on a commonly named variable, here, that variable is &#39;Site&#39;
+
+bio_indices # return the resulting joined dataset</code></pre>
 <pre><code>## # A tibble: 2 × 4
 ##   Site      N Shannon Richness
 ##   &lt;chr&gt; &lt;int&gt;   &lt;dbl&gt;    &lt;int&gt;
@@ -539,9 +531,18 @@ To do this, we’ll use the ggplot2 package, which is a commonly used R
 graphing package, that allows for lots of flexible formatting
 options.</p>
 <pre class="r"><code># first, we need to transform the data such that each observed index value is its own row, and we move the index names to one column. This is known as a &#39;long&#39; format data frame
-bio_indices_long &lt;- pivot_longer(bio_indices, cols = Shannon:Evenness, names_to = &quot;Index&quot;)
-
-# Create a bar plot of the three indices, comparing sites
+bio_indices_long &lt;- pivot_longer(bio_indices, cols = Shannon:Evenness, names_to = &quot;Index&quot;) # cols argument is the first:last colummns for the indices.
+head(bio_indices_long)</code></pre>
+<pre><code>## # A tibble: 6 × 4
+##   Site      N Index    value
+##   &lt;chr&gt; &lt;int&gt; &lt;chr&gt;    &lt;dbl&gt;
+## 1 A       100 Shannon  1.29 
+## 2 A       100 Richness 6    
+## 3 A       100 Evenness 0.722
+## 4 B       100 Shannon  1.77 
+## 5 B       100 Richness 6    
+## 6 B       100 Evenness 0.988</code></pre>
+<pre class="r"><code># Create a bar plot of the three indices, comparing sites
 bioplot &lt;- ggplot(data=bio_indices_long, aes(x=Site, y=value, fill=Site)) + # indicates the dataframe to use, the x axis variable (Site), y axis variable (value), and grouping variable (Site) for colors
   geom_bar(stat=&quot;identity&quot;) + # specifies type of plot
   facet_grid(rows=vars(Index), scales = &quot;free_y&quot;) + # separates each index to its own plot in its own row

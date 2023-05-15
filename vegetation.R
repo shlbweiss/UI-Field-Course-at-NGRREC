@@ -75,11 +75,12 @@ bioplot
 # We'll want to add in some 0 values to account for not every species being in every quadrat. To do that we'll transform the dataframe into a 'wide' format, with each species now having its own column
 
 veg_wide <- pivot_wider(veg, id_cols = c(Transect, Distance), names_from = Species, values_from = Percent_Cover, values_fill = 0) # we make sure to set values_fill equal to zero so that non observations are counted as '0'.
+head(veg_wide) # inspect what the wide format data frame looks like
+
 
 # we can now move back to long format to finish summarizing. You should notice that our new dataframe is longer than the original 'veg' dataframe since we have now added in those zero observations
 veg_wzeros <- pivot_longer(veg_wide, cols = `Phalaris arundinacea`:`Stellaria media`, names_to = "Species", values_to = "Percent_Cover")
-
-head(veg_wzeros)
+head(veg_wzeros) # cols argument is the first:last species colummns. I had to use `` around the names because the names include spaces.
 
 # what is the total percent cover across all quadrats?
 tot_cover <- sum(veg_wzeros$Percent_Cover) # assign the value to an object so we can reference later
