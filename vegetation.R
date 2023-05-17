@@ -23,10 +23,11 @@ head(veg)
 
 ###### Species Richness ######
 
-# calculating the number of species observed at each quadrat
+# calculating the number of species observed across all quadrats in the wetland by distance
 
-richness <- veg %>% 
-  group_by(Transect, Distance) %>% # designate the grouping variable(s)
+unique_veg <- unique(veg[,c("Distance", "Species")])
+richness <- unique_veg %>% 
+  group_by(Distance) %>% # designate the grouping variable(s)
   summarize(Richness = n()) # provide the formula, in this case, counting the rows (this is what 'n()' does)
 
 richness # return the resulting data frame, which summarizes species richness at each quadrat along each transect
@@ -34,9 +35,13 @@ richness # return the resulting data frame, which summarizes species richness at
 ###### Species Diversity - Shannon-Wiener ######
 
 diversity <- veg %>%
-  group_by(Transect, Distance) %>% # designate the grouping variable(s)
-  summarize(N = sum(Percent_Cover), # provide formula for calculating N (overall sum of individuals)
-            Shannon = -sum((Percent_Cover/sum(Percent_Cover))*log(Percent_Cover/sum(Percent_Cover)))) #provide the formula for the Shannon index, being mindful of where you place your parentheses.
+  group_by(Distance, Species) %>% # designate the grouping variable(s)
+  summarize(AvgCov = mean(Percent_Cover))           
+ 
+diversity <- diversity %>%
+  group_by(Distance) %>%
+  summarize(N = sum(AvgCov), # provide formula for calculating N (overall sum of individuals)
+            Shannon = -sum((AvgCov/sum(AvgCov))*log(AvgCov/sum(AvgCov)))) #provide the formula for the Shannon index, being mindful of where you place your parentheses.
 
 diversity # return the summarized data
 
@@ -50,11 +55,6 @@ bio_indices # return the resulting joined dataset
 bio_indices$Evenness <- bio_indices$Shannon/log(bio_indices$Richness) # assigning the resulting evenness calculations to a new variable called 'Evenness'
 bio_indices # return the updated data frame
 
-# calculate averages by distance along transects
-bio_indices_avg <- bio_indices %>%
-  group_by(Distance) %>% # grouping variable is just distance since we are averaging by transect
-  summarize(avg_Richness = mean(Richness), avg_Shannon = mean(Shannon), avg_Evenness = mean(Evenness))
-
 #### Plotting the results ####
 
 # first, we need to transform the data such that each observed index value is its own row, and we move the index names to one column. This is known as a 'long' format data frame
@@ -62,7 +62,7 @@ bio_indices_long <- pivot_longer(bio_indices, cols = Shannon:Evenness, names_to 
 
 # Create a bar plot of the three indices, comparing sites
 bioplot <- ggplot(data=bio_indices_long, aes(x=as.factor(Distance), y=value, fill=as.factor(Distance))) + # indicates the dataframe to use, the x axis variable (Site), y axis variable (value), and grouping variable (Site) for colors
-  geom_boxplot() + # specifies type of plot
+  geom_point() + # specifies type of plot
   facet_grid(rows=vars(Index), scales = "free_y") + # separates each index to its own plot in its own row
   ggtitle("Biodiversity Indices") + # title 
   xlab("Distance (m)") + # x axis label
