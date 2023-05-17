@@ -22,10 +22,10 @@ head(veg)
 #### Calculating Indices of Biodiversity: Richness, Diversity, and Evenness ####
 
 ###### Species Richness ######
-
+ 
 # calculating the number of species observed across all quadrats in the wetland by distance
 
-unique_veg <- unique(veg[,c("Distance", "Species")])
+unique_veg <- unique(veg[,c("Distance", "Species")]) #list of unique species at each distance
 richness <- unique_veg %>% 
   group_by(Distance) %>% # designate the grouping variable(s)
   summarize(Richness = n()) # provide the formula, in this case, counting the rows (this is what 'n()' does)
@@ -34,16 +34,25 @@ richness # return the resulting data frame, which summarizes species richness at
 
 ###### Species Diversity - Shannon-Wiener ######
 
-diversity <- veg %>%
+avg_cov <- veg %>%
   group_by(Distance, Species) %>% # designate the grouping variable(s)
   summarize(AvgCov = mean(Percent_Cover))           
- 
-diversity <- diversity %>%
+
+diversity_table <- avg_cov %>%
   group_by(Distance) %>%
   summarize(N = sum(AvgCov), # provide formula for calculating N (overall sum of individuals)
-            Shannon = -sum((AvgCov/sum(AvgCov))*log(AvgCov/sum(AvgCov)))) #provide the formula for the Shannon index, being mindful of where you place your parentheses.
+            pi = AvgCov/sum(AvgCov),
+            lnpi = log(pi),
+            Shannon = -(pi*lnpi)) 
 
-diversity # return the summarized data
+diversity_table # return the summarized data
+
+# finish calculating overall Shannon's index for the site by distance 
+diversity <- diversity_table %>%
+  group_by(Distance) %>%
+  summarize(Shannon=sum(Shannon))
+
+diversity # return the summarized data 
 
 ###### Species Evenness ######
 
@@ -61,7 +70,7 @@ bio_indices # return the updated data frame
 bio_indices_long <- pivot_longer(bio_indices, cols = Shannon:Evenness, names_to = "Index")
 
 # Create a bar plot of the three indices, comparing sites
-bioplot <- ggplot(data=bio_indices_long, aes(x=as.factor(Distance), y=value, fill=as.factor(Distance))) + # indicates the dataframe to use, the x axis variable (Site), y axis variable (value), and grouping variable (Site) for colors
+bioplot <- ggplot(data=bio_indices_long, aes(x=as.factor(Distance), y=value)) + # indicates the dataframe to use, the x axis variable (Site), y axis variable (value), and grouping variable (Site) for colors
   geom_point() + # specifies type of plot
   facet_grid(rows=vars(Index), scales = "free_y") + # separates each index to its own plot in its own row
   ggtitle("Biodiversity Indices") + # title 
